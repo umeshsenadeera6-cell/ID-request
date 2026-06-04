@@ -111,7 +111,7 @@ function executeMockQuery(sql: string, params: any[]): any {
   // 2. Employees Queries
   if (cleanSql.includes('FROM employees') || cleanSql.includes('FROM `employees`')) {
     // Check if SELECT e.*, d.name AS department_name FROM employees
-    if (cleanSql.startsWith('SELECT e.*, d.name') || cleanSql.startsWith('SELECT * FROM employees') || cleanSql.startsWith('SELECT * FROM `employees`')) {
+    if (cleanSql.startsWith('SELECT')) {
       // Return employees with department names joined
       return mockDb.employees.map(emp => {
         const dept = mockDb.departments.find(d => d.id === emp.department_id);
@@ -179,7 +179,7 @@ function executeMockQuery(sql: string, params: any[]): any {
 
   // 3. ID Card Requests Queries
   if (cleanSql.includes('FROM id_card_requests') || cleanSql.includes('FROM `id_card_requests`')) {
-    if (cleanSql.startsWith('SELECT r.*') || cleanSql.startsWith('SELECT * FROM id_card_requests') || cleanSql.startsWith('SELECT * FROM `id_card_requests`')) {
+    if (cleanSql.startsWith('SELECT')) {
       return mockDb.id_card_requests.map(req => {
         const emp = mockDb.employees.find(e => e.id === req.employee_id);
         const dept = emp ? mockDb.departments.find(d => d.id === emp.department_id) : null;
@@ -257,7 +257,7 @@ function executeMockQuery(sql: string, params: any[]): any {
 
   // 4. Visiting Card Requests Queries
   if (cleanSql.includes('FROM visiting_card_requests') || cleanSql.includes('FROM `visiting_card_requests`')) {
-    if (cleanSql.startsWith('SELECT r.*') || cleanSql.startsWith('SELECT * FROM visiting_card_requests') || cleanSql.startsWith('SELECT * FROM `visiting_card_requests`')) {
+    if (cleanSql.startsWith('SELECT')) {
       return mockDb.visiting_card_requests.map(req => {
         const emp = mockDb.employees.find(e => e.id === req.employee_id);
         const dept = emp ? mockDb.departments.find(d => d.id === emp.department_id) : null;

@@ -36,28 +36,28 @@
 
 /* Dynamic colors for icon containers */
 .idColor {
-  background-color: var(--primary-light);
-  color: var(--primary);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
 }
 
 .vcColor {
-  background-color: #f5f3ff;
-  color: #7c3aed;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #ffffff;
 }
 
 .pendingColor {
-  background-color: var(--status-pending-bg);
-  color: var(--status-pending-text);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
 }
 
 .printedColor {
-  background-color: var(--status-printed-bg);
-  color: var(--status-printed-text);
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: #ffffff;
 }
 
 .issuedColor {
-  background-color: var(--status-issued-bg);
-  color: var(--status-issued-text);
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
 }
 
 .cardDetails {
@@ -153,3 +153,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Recent Requisitions panel */
+.recentSection {
+  margin-top: 12px;
+}
+
+.recentCard {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.recentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.recentTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--slate-800);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

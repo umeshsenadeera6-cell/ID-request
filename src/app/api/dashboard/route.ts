@@ -3,18 +3,18 @@ import { query } from '@/lib/db';
 
 export async function GET() {
   try {
-    // 1. Fetch ID Card requests with department names
+    // 1. Fetch ID Card requests with employee and department names
     const idSql = `
-      SELECT r.id, r.status, r.request_date, d.name AS department_name
+      SELECT r.id, r.status, r.request_date, r.card_type AS details, e.name AS employee_name, e.employee_code, d.name AS department_name
       FROM id_card_requests r
       JOIN employees e ON r.employee_id = e.id
       JOIN departments d ON e.department_id = d.id
     `;
     const idRequests = await query(idSql);
 
-    // 2. Fetch Visiting Card requests with department names
+    // 2. Fetch Visiting Card requests with employee and department names
     const vcSql = `
-      SELECT r.id, r.status, r.request_date, d.name AS department_name
+      SELECT r.id, r.status, r.request_date, CONCAT(r.quantity, ' Cards') AS details, e.name AS employee_name, e.employee_code, d.name AS department_name
       FROM visiting_card_requests r
       JOIN employees e ON r.employee_id = e.id
       JOIN departments d ON e.department_id = d.id
@@ -104,6 +104,33 @@ export async function GET() {
 
     const departmentStats = Object.values(deptMap);
 
+    // 6. Recent Requests (Compose 5 most recent overall)
+    const idMapped = idRequests.map((r: any) => ({
+      id: r.id,
+      category: 'ID Card',
+      employee_name: r.employee_name,
+      employee_code: r.employee_code,
+      department_name: r.department_name,
+      details: r.details,
+      date: r.request_date,
+      status: r.status
+    }));
+
+    const vcMapped = vcRequests.map((r: any) => ({
+      id: r.id,
+      category: 'Visiting Card',
+      employee_name: r.employee_name,
+      employee_code: r.employee_code,
+      department_name: r.department_name,
+      details: r.details,
+      date: r.request_date,
+      status: r.status
+    }));
+
+    const recentRequests = [...idMapped, ...vcMapped]
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
+
     return NextResponse.json({
       success: true,
       data: {
@@ -116,7 +143,8 @@ export async function GET() {
           totalRequests: totalIdCards + totalVisitingCards
         },
         monthlyStats,
-        departmentStats
+        departmentStats,
+        recentRequests
       }
     });
   } catch (error: any) {

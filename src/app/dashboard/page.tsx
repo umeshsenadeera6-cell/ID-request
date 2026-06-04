@@ -22,6 +22,7 @@ import {
   Legend, 
   ResponsiveContainer 
 } from 'recharts';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import styles from './dashboard.module.css';
 
@@ -46,10 +47,22 @@ interface DepartmentStat {
   visitingCards: number;
 }
 
+interface RecentRequest {
+  id: number;
+  category: 'ID Card' | 'Visiting Card';
+  employee_name: string;
+  employee_code: string;
+  department_name: string;
+  details: string;
+  date: string;
+  status: 'Pending' | 'Printed' | 'Issued';
+}
+
 interface DashboardState {
   summary: SummaryData;
   monthlyStats: MonthlyStat[];
   departmentStats: DepartmentStat[];
+  recentRequests: RecentRequest[];
 }
 
 const initialSummary: SummaryData = {
@@ -65,7 +78,8 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardState>({
     summary: initialSummary,
     monthlyStats: [],
-    departmentStats: []
+    departmentStats: [],
+    recentRequests: []
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -255,6 +269,72 @@ export default function DashboardPage() {
             </div>
           </div>
         </section>
+        {/* Recent Requisitions Section */}
+        {!loading && data.recentRequests && data.recentRequests.length > 0 && (
+          <section className={styles.recentSection}>
+            <div className={styles.recentCard}>
+              <div className={styles.recentHeader}>
+                <h2 className={styles.recentTitle}>
+                  <Clock size={18} style={{ color: 'var(--primary)', verticalAlign: 'text-bottom' }} />
+                  Recent Requisitions
+                </h2>
+                <Link href="/id-requests" className="btn btn-secondary btn-sm">
+                  View All Requests
+                </Link>
+              </div>
+              <div className="table-container" style={{ border: 'none', boxShadow: 'none' }}>
+                <table style={{ minWidth: '100%' }}>
+                  <thead>
+                    <tr>
+                      <th>Req ID</th>
+                      <th>Category</th>
+                      <th>Employee Details</th>
+                      <th>Card Details</th>
+                      <th>Request Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.recentRequests.map((req) => (
+                      <tr key={`${req.category}-${req.id}`}>
+                        <td style={{ fontWeight: '700', color: 'var(--slate-500)' }}>#{req.id}</td>
+                        <td style={{ fontWeight: 600 }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            {req.category === 'ID Card' ? (
+                              <IdCard size={14} style={{ color: 'var(--primary)' }} />
+                            ) : (
+                              <CreditCard size={14} style={{ color: '#7c3aed' }} />
+                            )}
+                            {req.category}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontWeight: '600', color: 'var(--slate-900)' }}>{req.employee_name}</span>
+                            <span style={{ fontSize: '11px', color: 'var(--slate-400)' }}>
+                              {req.employee_code} • {req.department_name}
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="badge standard">{req.details}</span>
+                        </td>
+                        <td>
+                          {req.date ? new Date(req.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }) : '-'}
+                        </td>
+                        <td>
+                          <span className={`badge ${req.status.toLowerCase()}`}>
+                            {req.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
