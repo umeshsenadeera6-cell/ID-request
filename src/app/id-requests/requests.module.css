@@ -1,0 +1,180 @@
+.filterBar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.filterRow2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--slate-100);
+  padding-top: 14px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dateRangeContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dateSeparator {
+  color: var(--slate-400);
+  font-size: 13px;
+}
+
+.tableWrapper {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tableHeaderActions {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--slate-50);
+}
+
+.tableTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.actionCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  background: none;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  color: var(--slate-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.iconBtn:hover {
+  background-color: var(--slate-50);
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+.deleteBtn:hover {
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+}
+
+.statusTransitionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: var(--transition-fast);
+}
+
+.printTransitionBtn {
+  background-color: var(--status-printed-bg);
+  color: var(--status-printed-text);
+  border-color: var(--status-printed-border);
+}
+.printTransitionBtn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.issueTransitionBtn {
+  background-color: var(--status-issued-bg);
+  color: var(--status-issued-text);
+  border-color: var(--status-issued-border);
+}
+.issueTransitionBtn:hover {
+  background-color: var(--status-issued-text);
+  color: #ffffff;
+  border-color: var(--status-issued-text);
+}
+
+.noData {
+  padding: 40px;
+  text-align: center;
+  color: var(--slate-400);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .filterGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .filterGrid {
+    grid-template-columns: 1fr;
+  }
+  .filterRow2 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+}

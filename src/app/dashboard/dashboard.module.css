@@ -1,0 +1,155 @@
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Dynamic colors for icon containers */
+.idColor {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.vcColor {
+  background-color: #f5f3ff;
+  color: #7c3aed;
+}
+
+.pendingColor {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending-text);
+}
+
+.printedColor {
+  background-color: var(--status-printed-bg);
+  color: var(--status-printed-text);
+}
+
+.issuedColor {
+  background-color: var(--status-issued-bg);
+  color: var(--status-issued-text);
+}
+
+.cardDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--slate-900);
+  line-height: 1.2;
+}
+
+.cardLabel {
+  font-size: 13px;
+  color: var(--slate-400);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.chartsSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 10px;
+}
+
+.chartCard {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+}
+
+.chartHeader {
+  margin-bottom: 20px;
+}
+
+.chartTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.chartSubtitle {
+  font-size: 12px;
+  color: var(--slate-400);
+  margin-top: 4px;
+}
+
+.chartBody {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  min-height: 250px;
+}
+
+/* Custom Empty State fallback inside charts */
+.chartLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--slate-400);
+  font-size: 14px;
+}
+
+@media (max-width: 1200px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .chartsSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}

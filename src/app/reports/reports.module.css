@@ -1,0 +1,199 @@
+.reportConfigCard {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.configGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.configActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--slate-100);
+  padding-top: 16px;
+}
+
+/* Report Preview Document */
+.reportPreviewWrapper {
+  background-color: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.docHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 20px;
+}
+
+.companyBranding {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.companyIcon {
+  color: var(--primary);
+}
+
+.companyName {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--slate-900);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.companySubtitle {
+  font-size: 12px;
+  color: var(--slate-500);
+}
+
+.docMeta {
+  text-align: right;
+  font-size: 13px;
+  color: var(--slate-600);
+  line-height: 1.5;
+}
+
+.docTitleArea {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.docTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--slate-900);
+  text-transform: uppercase;
+}
+
+.docSubtitle {
+  font-size: 13px;
+  color: var(--slate-500);
+  margin-top: 4px;
+}
+
+.summaryCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.summaryCard {
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  background-color: var(--slate-50);
+}
+
+.summaryVal {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.summaryLbl {
+  font-size: 11px;
+  color: var(--slate-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Sign-off section */
+.signOffSection {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.sigLine {
+  width: 200px;
+  border-top: 1px solid var(--slate-300);
+  text-align: center;
+  padding-top: 8px;
+  font-size: 12px;
+  color: var(--slate-500);
+  font-weight: 500;
+}
+
+/* Hidden by default, show in print */
+.printOnly {
+  display: none;
+}
+
+@media print {
+  .reportPreviewWrapper {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .sigLine {
+    border-top-color: #000000 !important;
+    color: #000000 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .configGrid {
+    grid-template-columns: 1fr;
+  }
+  .summaryCardsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .reportPreviewWrapper {
+    padding: 20px 16px;
+  }
+  .docHeader {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .docMeta {
+    text-align: left;
+  }
+  .signOffSection {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+}

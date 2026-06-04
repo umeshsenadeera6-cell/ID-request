@@ -1,0 +1,133 @@
+.header {
+  height: var(--header-height);
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--slate-400);
+  margin-top: 2px;
+}
+
+.actionsArea {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.roleSelectorContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--slate-50);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-200);
+}
+
+.roleLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.roleSelect {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0 8px;
+  outline: none;
+  box-shadow: none;
+  width: auto;
+}
+
+.roleSelect:focus {
+  box-shadow: none;
+}
+
+.profileArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  border: 2px solid var(--slate-200);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.userRoleBadge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: var(--slate-600);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.userRoleBadgeAdmin {
+  background-color: var(--primary);
+}
+
+.userRoleBadgeHR {
+  background-color: var(--slate-700);
+}
+
+.userRoleBadgeViewer {
+  background-color: var(--slate-400);
+}
+
+@media (max-width: 600px) {
+  .userName, .userRoleBadge, .roleLabel {
+    display: none;
+  }
+  .header {
+    padding: 0 16px;
+  }
+}
