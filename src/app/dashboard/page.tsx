@@ -25,7 +25,10 @@ import {
   Calendar,
   Lock,
   Unlock,
-  Check
+  Check,
+  Search,
+  Plus,
+  FileText
 } from 'lucide-react';
 import { 
   LineChart, 
