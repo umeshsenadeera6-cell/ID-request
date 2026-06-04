@@ -104,10 +104,16 @@ interface SummaryData {
 }
 
 export default function DashboardPage() {
-  const { currentUser, canWrite, canDelete } = useRole();
+  const { currentUser, canWrite, canDelete, isAdmin } = useRole();
 
   // Navigation state
   const [activeTab, setActiveTab] = useState<'request' | 'pipeline' | 'analytics'>('request');
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setActiveTab('request');
+    }
+  }, [isAdmin]);
   
   // Requisition settings
   const [reqCategory, setReqCategory] = useState<'id_card' | 'visiting_card' | 'both'>('id_card');
@@ -745,29 +751,31 @@ export default function DashboardPage() {
 
       <main className="main-content fade-in">
         {/* Navigation Tabs */}
-        <div className={styles.tabsContainer}>
-          <button 
-            className={`${styles.tabBtn} ${activeTab === 'request' ? styles.tabBtnActive : ''}`}
-            onClick={() => setActiveTab('request')}
-          >
-            <Sparkles size={16} />
-            New Card Request
-          </button>
-          <button 
-            className={`${styles.tabBtn} ${activeTab === 'pipeline' ? styles.tabBtnActive : ''}`}
-            onClick={() => setActiveTab('pipeline')}
-          >
-            <Clock size={16} />
-            Request Pipeline ({stats.pendingRequests} Pending)
-          </button>
-          <button 
-            className={`${styles.tabBtn} ${activeTab === 'analytics' ? styles.tabBtnActive : ''}`}
-            onClick={() => setActiveTab('analytics')}
-          >
-            <TrendingUp size={16} />
-            Analytics & Trends
-          </button>
-        </div>
+        {isAdmin && (
+          <div className={styles.tabsContainer}>
+            <button 
+              className={`${styles.tabBtn} ${activeTab === 'request' ? styles.tabBtnActive : ''}`}
+              onClick={() => setActiveTab('request')}
+            >
+              <Sparkles size={16} />
+              New Card Request
+            </button>
+            <button 
+              className={`${styles.tabBtn} ${activeTab === 'pipeline' ? styles.tabBtnActive : ''}`}
+              onClick={() => setActiveTab('pipeline')}
+            >
+              <Clock size={16} />
+              Request Pipeline ({stats.pendingRequests} Pending)
+            </button>
+            <button 
+              className={`${styles.tabBtn} ${activeTab === 'analytics' ? styles.tabBtnActive : ''}`}
+              onClick={() => setActiveTab('analytics')}
+            >
+              <TrendingUp size={16} />
+              Analytics & Trends
+            </button>
+          </div>
+        )}
 
         {/* LOADING SCREEN */}
         {loading && activeTab !== 'request' && (

@@ -15,6 +15,7 @@ import {
   X
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
+import { useRole } from '@/context/RoleContext';
 
 interface SidebarProps {
   onCollapseChange?: (collapsed: boolean) => void;
@@ -22,6 +23,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ onCollapseChange }) => {
   const pathname = usePathname();
+  const { isAdmin } = useRole();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -43,9 +45,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCollapseChange }) => {
   }, [pathname]);
 
   const navItems = [
-    { label: 'Requisition Portal', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Employees Database', path: '/employees', icon: Users }
+    { label: 'Requisition Portal', path: '/dashboard', icon: LayoutDashboard }
   ];
+
+  if (isAdmin) {
+    navItems.push({ label: 'Employees Database', path: '/employees', icon: Users });
+  }
 
   return (
     <>
