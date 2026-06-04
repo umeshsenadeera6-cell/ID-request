@@ -80,7 +80,10 @@ export default function IDRequestsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     fetchData();
   }, []);
 
@@ -266,6 +269,8 @@ export default function IDRequestsPage() {
     if (t.includes('temp')) return 'temp';
     return 'standard';
   };
+
+  if (!mounted) return null;
 
   return (
     <>

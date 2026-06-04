@@ -80,7 +80,10 @@ export default function VisitingRequestsPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     fetchData();
   }, []);
 
@@ -270,6 +273,8 @@ export default function VisitingRequestsPage() {
 
     return matchesSearch && matchesDept && matchesStatus && matchesDate;
   });
+
+  if (!mounted) return null;
 
   return (
     <>

@@ -62,7 +62,10 @@ export default function EmployeesPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     fetchData();
   }, []);
 
@@ -196,6 +199,8 @@ export default function EmployeesPage() {
     
     return matchesSearch && matchesDept;
   });
+
+  if (!mounted) return null;
 
   return (
     <>

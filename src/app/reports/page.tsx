@@ -60,7 +60,10 @@ export default function ReportsPage() {
   // Months listing for monthly dropdown
   const [availableMonths, setAvailableMonths] = useState<{ value: string; label: string }[]>([]);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     fetchData();
   }, []);
 
@@ -233,6 +236,8 @@ export default function ReportsPage() {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
   };
+
+  if (!mounted) return null;
 
   return (
     <>
