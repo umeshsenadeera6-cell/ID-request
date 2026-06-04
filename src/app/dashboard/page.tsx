@@ -1838,13 +1838,40 @@ export default function DashboardPage() {
                     <div className={styles.idMockupBody}>
                       <div className={styles.hologramChip}></div>
 
-                      <div className={styles.idPhotoWrapper}>
+                      <div className={styles.idPhotoWrapper} style={{ position: 'relative' }}>
                         {parseRequestRemarks(viewProofRequest.remarks).photo ? (
-                          <img 
-                            src={parseRequestRemarks(viewProofRequest.remarks).photo} 
-                            alt="Employee photo" 
-                            className={styles.idPhoto} 
-                          />
+                          <>
+                            <img 
+                              src={parseRequestRemarks(viewProofRequest.remarks).photo} 
+                              alt="Employee photo" 
+                              className={styles.idPhoto} 
+                            />
+                            {isAdmin && (
+                              <a 
+                                href={parseRequestRemarks(viewProofRequest.remarks).photo} 
+                                download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.png`}
+                                style={{
+                                  position: 'absolute',
+                                  inset: 0,
+                                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  color: '#ffffff',
+                                  opacity: 0,
+                                  transition: 'opacity 0.2s ease',
+                                  cursor: 'pointer',
+                                  borderRadius: '50%',
+                                  zIndex: 10
+                                }}
+                                title="Download Photo"
+                                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+                              >
+                                <Download size={20} />
+                              </a>
+                            )}
+                          </>
                         ) : (
                           <div className={styles.idAvatarFallback}>
                             <User size={48} />
@@ -1926,7 +1953,18 @@ export default function DashboardPage() {
                 <strong>Auditor Comments:</strong> {parseRequestRemarks(viewProofRequest.remarks).notes || 'No remarks provided.'}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+                {isAdmin && viewProofRequest.category === 'ID Card' && parseRequestRemarks(viewProofRequest.remarks).photo && (
+                  <a 
+                    href={parseRequestRemarks(viewProofRequest.remarks).photo} 
+                    download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.png`}
+                    className="btn btn-primary"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <Download size={14} />
+                    Download Photo
+                  </a>
+                )}
                 <button className="btn btn-secondary" onClick={() => setViewProofRequest(null)}>
                   Close Proof
                 </button>
