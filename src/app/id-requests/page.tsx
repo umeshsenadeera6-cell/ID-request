@@ -505,21 +505,7 @@ export default function IDRequestsPage() {
                 </select>
               </div>
 
-              <div className={styles.inputGroup}>
-                <label htmlFor="card_type">ID Card Type *</label>
-                <select 
-                  id="card_type"
-                  name="card_type" 
-                  value={formData.card_type}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="Standard">Standard Card</option>
-                  <option value="RFID">RFID Card</option>
-                  <option value="Smart Card">Smart Card</option>
-                  <option value="Temporary">Temporary Card</option>
-                </select>
-              </div>
+
 
               <div className={styles.inputGroup}>
                 <label htmlFor="request_date">Request Date *</label>

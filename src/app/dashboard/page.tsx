@@ -1164,25 +1164,6 @@ export default function DashboardPage() {
                   {/* ID CARD OPTIONS */}
                   {(reqCategory === 'id_card' || reqCategory === 'both') && (
                     <div className={`${styles.inputGroup} ${reqCategory === 'id_card' ? styles.formGridFull : ''}`}>
-                      <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--slate-700)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <IdCard size={15} style={{ color: 'var(--primary)' }} />
-                        ID Card Specifications
-                      </h4>
-                      
-                      <div className={styles.inputGroup} style={{ marginBottom: '12px' }}>
-                        <label htmlFor="card_type">ID Card Printing Badge Type *</label>
-                        <select 
-                          id="card_type" 
-                          value={cardSpecs.card_type}
-                          onChange={(e) => setCardSpecs(prev => ({ ...prev, card_type: e.target.value }))}
-                        >
-                          <option value="Standard">Standard Card</option>
-                          <option value="RFID">RFID Access Card</option>
-                          <option value="Smart Card">Smart Chip Card</option>
-                          <option value="Temporary">Temporary Visitor Card</option>
-                        </select>
-                      </div>
-
                       {/* Photo Asset Upload Zone */}
                       <div className={styles.inputGroup}>
                         <label>Upload Employee Photo (Individual Request Only)</label>
@@ -1963,22 +1944,7 @@ export default function DashboardPage() {
           {editingRequest && (
             <form onSubmit={handleSaveEditRequest}>
               <div className={styles.formGrid}>
-                {editingRequest.category === 'ID Card' ? (
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="edit_card_type">ID Card Badge Type *</label>
-                    <select 
-                      id="edit_card_type" 
-                      value={editForm.card_type}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, card_type: e.target.value }))}
-                      required
-                    >
-                      <option value="Standard">Standard Card</option>
-                      <option value="RFID">RFID Access Card</option>
-                      <option value="Smart Card">Smart Chip Card</option>
-                      <option value="Temporary">Temporary Visitor Card</option>
-                    </select>
-                  </div>
-                ) : (
+                {editingRequest.category === 'Visiting Card' && (
                   <div className={styles.inputGroup}>
                     <label htmlFor="edit_quantity">Card Print Quantity *</label>
                     <select 

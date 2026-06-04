@@ -285,21 +285,7 @@ export default function NewIDRequestPage() {
 
                 {/* Form Fields Grid */}
                 <div className={styles.formGrid}>
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="card_type">ID Card Type *</label>
-                    <select
-                      id="card_type"
-                      name="card_type"
-                      value={formData.card_type}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="Standard">Standard Card</option>
-                      <option value="RFID">RFID Access Card</option>
-                      <option value="Smart Card">Smart Chip Card</option>
-                      <option value="Temporary">Temporary Visitor Card</option>
-                    </select>
-                  </div>
+
 
                   <div className={styles.inputGroup}>
                     <label htmlFor="request_date">Requisition Date *</label>
