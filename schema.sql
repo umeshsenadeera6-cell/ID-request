@@ -83,11 +83,17 @@ CREATE INDEX idx_vc_req_date ON visiting_card_requests(request_date);
 
 -- Seed Branches
 INSERT INTO `branches` (`id`, `name`) VALUES
-(1, 'Information Technology'),
-(2, 'Human Resources'),
-(3, 'Finance & Accounts'),
-(4, 'Marketing & Sales'),
-(5, 'Operations')
+(1, 'Headoffice'),
+(2, 'Kandy'),
+(3, 'Kurunegala'),
+(4, 'Galle'),
+(5, 'Matara'),
+(6, 'Ambalantota'),
+(7, 'Thissamaharama'),
+(8, 'Spices factory'),
+(9, 'Jaffna'),
+(10, 'Rathnapura'),
+(11, 'Trincomalee')
 ON DUPLICATE KEY UPDATE `name` = VALUES(`name`);
 
 -- Seed Employees

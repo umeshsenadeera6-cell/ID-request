@@ -11,11 +11,17 @@ interface MockStore {
 
 const initialMockStore: MockStore = {
   branches: [
-    { id: 1, name: 'Information Technology', created_at: new Date() },
-    { id: 2, name: 'Human Resources', created_at: new Date() },
-    { id: 3, name: 'Finance & Accounts', created_at: new Date() },
-    { id: 4, name: 'Marketing & Sales', created_at: new Date() },
-    { id: 5, name: 'Operations', created_at: new Date() },
+    { id: 1, name: 'Headoffice', created_at: new Date() },
+    { id: 2, name: 'Kandy', created_at: new Date() },
+    { id: 3, name: 'Kurunegala', created_at: new Date() },
+    { id: 4, name: 'Galle', created_at: new Date() },
+    { id: 5, name: 'Matara', created_at: new Date() },
+    { id: 6, name: 'Ambalantota', created_at: new Date() },
+    { id: 7, name: 'Thissamaharama', created_at: new Date() },
+    { id: 8, name: 'Spices factory', created_at: new Date() },
+    { id: 9, name: 'Jaffna', created_at: new Date() },
+    { id: 10, name: 'Rathnapura', created_at: new Date() },
+    { id: 11, name: 'Trincomalee', created_at: new Date() },
   ],
   employees: [
     { id: 1, employee_code: 'EMP001', name: 'John Doe', branch_id: 1, designation: 'Senior Software Engineer', mobile: '+1 555-0101', email: 'john.doe@company.com' },
