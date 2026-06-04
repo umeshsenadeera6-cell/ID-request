@@ -267,6 +267,17 @@ export default function DashboardPage() {
     return { notes: remarksStr, photo: '', logo: '' };
   };
 
+  const getPhotoExtension = (base64Str: string | null) => {
+    if (!base64Str) return 'png';
+    const match = base64Str.match(/^data:image\/([a-zA-Z0-9+]+);base64,/);
+    if (match && match[1]) {
+      const ext = match[1].toLowerCase();
+      if (ext === 'jpeg') return 'jpg';
+      return ext;
+    }
+    return 'png';
+  };
+
   // Handle Autocomplete Suggestions
   const filteredEmployeesSuggestions = employees.filter(emp => {
     if (!searchQuery.trim()) return false;
@@ -1849,7 +1860,7 @@ export default function DashboardPage() {
                             {isAdmin && (
                               <a 
                                 href={parseRequestRemarks(viewProofRequest.remarks).photo} 
-                                download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.png`}
+                                download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.${getPhotoExtension(parseRequestRemarks(viewProofRequest.remarks).photo)}`}
                                 style={{
                                   position: 'absolute',
                                   inset: 0,
@@ -1957,7 +1968,7 @@ export default function DashboardPage() {
                 {isAdmin && viewProofRequest.category === 'ID Card' && parseRequestRemarks(viewProofRequest.remarks).photo && (
                   <a 
                     href={parseRequestRemarks(viewProofRequest.remarks).photo} 
-                    download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.png`}
+                    download={`photo_${viewProofRequest.employee_code || viewProofRequest.id}.${getPhotoExtension(parseRequestRemarks(viewProofRequest.remarks).photo)}`}
                     className="btn btn-primary"
                     style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                   >
