@@ -43,11 +43,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCollapseChange }) => {
   }, [pathname]);
 
   const navItems = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Employees', path: '/employees', icon: Users },
-    { label: 'ID Card Requests', path: '/id-requests', icon: IdCard },
-    { label: 'Visiting Cards', path: '/visiting-requests', icon: CreditCard },
-    { label: 'Reports', path: '/reports', icon: FileText }
+    { label: 'Requisition Portal', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Employees Database', path: '/employees', icon: Users }
   ];
 
   return (
