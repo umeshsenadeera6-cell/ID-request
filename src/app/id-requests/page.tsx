@@ -12,6 +12,7 @@ import {
   FileText,
   Calendar
 } from 'lucide-react';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Modal from '@/components/Modal';
 import { useRole } from '@/context/RoleContext';
@@ -46,7 +47,7 @@ interface Department {
 }
 
 export default function IDRequestsPage() {
-  const { canWrite, canDelete, currentUser } = useRole();
+  const { canWrite, canDelete } = useRole();
 
   // Data State
   const [requests, setRequests] = useState<IDRequest[]>([]);
@@ -110,25 +111,6 @@ export default function IDRequestsPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const openAddModal = () => {
-    if (employees.length === 0) {
-      alert('Please add employees first before creating a card request.');
-      return;
-    }
-    setEditingRequest(null);
-    setFormData({
-      employee_id: employees[0]?.id.toString() || '',
-      card_type: 'Standard',
-      request_date: new Date().toISOString().split('T')[0],
-      requested_by: currentUser.name || '',
-      remarks: '',
-      status: 'Pending'
-    });
-    setFormError(null);
-    setModalTitle('Create New ID Card Request');
-    setIsModalOpen(true);
   };
 
   const openEditModal = (req: IDRequest) => {
@@ -364,10 +346,10 @@ export default function IDRequestsPage() {
               </span>
             </div>
             {canWrite && (
-              <button className="btn btn-primary" onClick={openAddModal}>
+              <Link href="/id-requests/new" className="btn btn-primary">
                 <Plus size={16} />
                 New Request
-              </button>
+              </Link>
             )}
           </div>
         </section>
