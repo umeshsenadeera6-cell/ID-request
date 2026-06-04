@@ -3,21 +3,21 @@ import { query } from '@/lib/db';
 
 export async function GET() {
   try {
-    // 1. Fetch ID Card requests with employee and department names
+    // 1. Fetch ID Card requests with employee and branch names
     const idSql = `
-      SELECT r.id, r.status, r.request_date, r.card_type AS details, e.name AS employee_name, e.employee_code, d.name AS department_name
+      SELECT r.id, r.status, r.request_date, r.card_type AS details, e.name AS employee_name, e.employee_code, b.name AS branch_name
       FROM id_card_requests r
       JOIN employees e ON r.employee_id = e.id
-      JOIN departments d ON e.department_id = d.id
+      JOIN branches b ON e.branch_id = b.id
     `;
     const idRequests = await query(idSql);
 
-    // 2. Fetch Visiting Card requests with employee and department names
+    // 2. Fetch Visiting Card requests with employee and branch names
     const vcSql = `
-      SELECT r.id, r.status, r.request_date, CONCAT(r.quantity, ' Cards') AS details, e.name AS employee_name, e.employee_code, d.name AS department_name
+      SELECT r.id, r.status, r.request_date, CONCAT(r.quantity, ' Cards') AS details, e.name AS employee_name, e.employee_code, b.name AS branch_name
       FROM visiting_card_requests r
       JOIN employees e ON r.employee_id = e.id
-      JOIN departments d ON e.department_id = d.id
+      JOIN branches b ON e.branch_id = b.id
     `;
     const vcRequests = await query(vcSql);
 
@@ -78,31 +78,31 @@ export async function GET() {
 
     const monthlyStats = last6Months.map(key => monthlyMap[key]);
 
-    // 5. Department-wise Statistics
-    const departmentsList = await query('SELECT name FROM departments');
-    const deptMap: { [key: string]: { department: string; idCards: number; visitingCards: number } } = {};
+    // 5. Branch-wise Statistics
+    const branchesList = await query('SELECT name FROM branches');
+    const branchMap: { [key: string]: { branch: string; idCards: number; visitingCards: number } } = {};
 
-    departmentsList.forEach((d: any) => {
-      deptMap[d.name] = { department: d.name, idCards: 0, visitingCards: 0 };
+    branchesList.forEach((b: any) => {
+      branchMap[b.name] = { branch: b.name, idCards: 0, visitingCards: 0 };
     });
 
     idRequests.forEach((r: any) => {
-      if (deptMap[r.department_name]) {
-        deptMap[r.department_name].idCards++;
+      if (branchMap[r.branch_name]) {
+        branchMap[r.branch_name].idCards++;
       } else {
-        deptMap[r.department_name] = { department: r.department_name, idCards: 1, visitingCards: 0 };
+        branchMap[r.branch_name] = { branch: r.branch_name, idCards: 1, visitingCards: 0 };
       }
     });
 
     vcRequests.forEach((r: any) => {
-      if (deptMap[r.department_name]) {
-        deptMap[r.department_name].visitingCards++;
+      if (branchMap[r.branch_name]) {
+        branchMap[r.branch_name].visitingCards++;
       } else {
-        deptMap[r.department_name] = { department: r.department_name, idCards: 0, visitingCards: 1 };
+        branchMap[r.branch_name] = { branch: r.branch_name, idCards: 0, visitingCards: 1 };
       }
     });
 
-    const departmentStats = Object.values(deptMap);
+    const branchStats = Object.values(branchMap);
 
     // 6. Recent Requests (Compose 5 most recent overall)
     const idMapped = idRequests.map((r: any) => ({
@@ -110,7 +110,7 @@ export async function GET() {
       category: 'ID Card',
       employee_name: r.employee_name,
       employee_code: r.employee_code,
-      department_name: r.department_name,
+      branch_name: r.branch_name,
       details: r.details,
       date: r.request_date,
       status: r.status
@@ -121,7 +121,7 @@ export async function GET() {
       category: 'Visiting Card',
       employee_name: r.employee_name,
       employee_code: r.employee_code,
-      department_name: r.department_name,
+      branch_name: r.branch_name,
       details: r.details,
       date: r.request_date,
       status: r.status
@@ -143,7 +143,7 @@ export async function GET() {
           totalRequests: totalIdCards + totalVisitingCards
         },
         monthlyStats,
-        departmentStats,
+        branchStats,
         recentRequests
       }
     });

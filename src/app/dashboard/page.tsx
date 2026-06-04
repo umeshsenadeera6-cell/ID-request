@@ -53,14 +53,14 @@ interface Employee {
   id: number;
   name: string;
   employee_code: string;
-  department_id: number;
-  department_name: string;
+  branch_id: number;
+  branch_name: string;
   designation: string;
   mobile: string;
   email: string;
 }
 
-interface Department {
+interface Branch {
   id: number;
   name: string;
 }
@@ -70,8 +70,8 @@ interface ConsolidatedRequest {
   employee_id: number;
   employee_name: string;
   employee_code: string;
-  department_id: number;
-  department_name: string;
+  branch_id: number;
+  branch_name: string;
   category: 'ID Card' | 'Visiting Card';
   details: string; // card_type for ID, quantity + ' Cards' for Visiting
   request_date: string;
@@ -87,7 +87,7 @@ interface BulkRow {
   employee_code: string;
   name: string;
   designation: string;
-  department_name: string;
+  branch_name: string;
   mobile: string;
   email: string;
   card_type: string;
@@ -121,7 +121,7 @@ export default function DashboardPage() {
 
   // Master Data
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [requests, setRequests] = useState<ConsolidatedRequest[]>([]);
   const [stats, setStats] = useState<SummaryData>({
     totalIdCards: 0,
@@ -132,7 +132,7 @@ export default function DashboardPage() {
     totalRequests: 0
   });
   const [monthlyStats, setMonthlyStats] = useState<any[]>([]);
-  const [departmentStats, setDepartmentStats] = useState<any[]>([]);
+  const [branchStats, setBranchStats] = useState<any[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -148,7 +148,7 @@ export default function DashboardPage() {
     employee_code: '',
     name: '',
     designation: '',
-    department_id: '',
+    branch_id: '',
     mobile: '',
     email: ''
   });
@@ -173,7 +173,7 @@ export default function DashboardPage() {
   const [filterSearch, setFilterSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
-  const [filterDept, setFilterDept] = useState('');
+  const [filterBranch, setFilterBranch] = useState('');
   const [filterStartDate, setFilterStartDate] = useState('');
   const [filterEndDate, setFilterEndDate] = useState('');
 
@@ -202,22 +202,22 @@ export default function DashboardPage() {
   const fetchMasterData = async () => {
     try {
       setLoading(true);
-      const [empRes, deptRes, reqIdRes, reqVcRes, statsRes] = await Promise.all([
+      const [empRes, branchRes, reqIdRes, reqVcRes, statsRes] = await Promise.all([
         fetch('/api/employees'),
-        fetch('/api/departments'),
+        fetch('/api/branches'),
         fetch('/api/requests/id-cards'),
         fetch('/api/requests/visiting-cards'),
         fetch('/api/dashboard')
       ]);
 
       const empJson = await empRes.json();
-      const deptJson = await deptRes.json();
+      const branchJson = await branchRes.json();
       const reqIdJson = await reqIdRes.json();
       const reqVcJson = await reqVcRes.json();
       const statsJson = await statsRes.json();
 
       if (empJson.success) setEmployees(empJson.data);
-      if (deptJson.success) setDepartments(deptJson.data);
+      if (branchJson.success) setBranches(branchJson.data);
 
       // Merge and Consolidate requests
       if (reqIdJson.success && reqVcJson.success) {
@@ -240,7 +240,7 @@ export default function DashboardPage() {
       if (statsJson.success) {
         setStats(statsJson.data.summary);
         setMonthlyStats(statsJson.data.monthlyStats);
-        setDepartmentStats(statsJson.data.departmentStats);
+        setBranchStats(statsJson.data.branchStats);
       }
     } catch (err) {
       console.error('Error fetching master data:', err);
@@ -282,7 +282,7 @@ export default function DashboardPage() {
       employee_code: emp.employee_code,
       name: emp.name,
       designation: emp.designation,
-      department_id: String(emp.department_id),
+      branch_id: String(emp.branch_id),
       mobile: emp.mobile,
       email: emp.email
     });
@@ -297,7 +297,7 @@ export default function DashboardPage() {
       employee_code: '',
       name: '',
       designation: '',
-      department_id: departments[0]?.id ? String(departments[0].id) : '',
+      branch_id: branches[0]?.id ? String(branches[0].id) : '',
       mobile: '',
       email: ''
     });
@@ -351,7 +351,7 @@ export default function DashboardPage() {
           const code = row['Employee Code'] || row['EmployeeCode'] || row['Code'] || row['code'] || row['employee_code'] || '';
           const name = row['Full Name'] || row['FullName'] || row['Name'] || row['name'] || '';
           const designation = row['Designation'] || row['designation'] || row['designation_title'] || '';
-          const deptName = row['Department'] || row['department'] || row['dept'] || '';
+          const branchName = row['Branch'] || row['branch'] || row['dept'] || '';
           const mobile = row['Mobile'] || row['mobile'] || row['Phone'] || row['phone'] || '';
           const email = row['Email'] || row['email'] || row['Email Address'] || '';
           const cardType = row['Card Type'] || row['CardType'] || row['card_type'] || 'Standard';
@@ -362,7 +362,7 @@ export default function DashboardPage() {
             employee_code: String(code).trim(),
             name: String(name).trim(),
             designation: String(designation).trim(),
-            department_name: String(deptName).trim(),
+            branch_name: String(branchName).trim(),
             mobile: String(mobile).trim(),
             email: String(email).trim(),
             card_type: String(cardType).trim(),
@@ -381,7 +381,7 @@ export default function DashboardPage() {
   };
 
   const handleDownloadCSVTemplate = () => {
-    const headers = 'Employee Code,Full Name,Designation,Department,Mobile,Email,Card Type (ID),Quantity (VC)\n';
+    const headers = 'Employee Code,Full Name,Designation,Branch,Mobile,Email,Card Type (ID),Quantity (VC)\n';
     const sample = 'EMP101,John Doe,Software Architect,Information Technology,+1 555-9999,john.doe@company.com,RFID,200\nEMP102,Alice Smith,HR Analyst,Human Resources,+1 555-8888,alice.s@company.com,Standard,100';
     const blob = new Blob([headers + sample], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -393,15 +393,15 @@ export default function DashboardPage() {
     document.body.removeChild(link);
   };
 
-  // Find Department ID by name match
-  const getDeptIdByName = (name: string) => {
+  // Find Branch ID by name match
+  const getBranchIdByName = (name: string) => {
     const search = name.toLowerCase().trim();
-    if (!search) return departments[0]?.id || 1;
-    const found = departments.find(d => 
+    if (!search) return branches[0]?.id || 1;
+    const found = branches.find(d => 
       d.name.toLowerCase() === search || 
       d.name.toLowerCase().includes(search)
     );
-    return found ? found.id : (departments[0]?.id || 1);
+    return found ? found.id : (branches[0]?.id || 1);
   };
 
   // Submit Requisitions (Individual / Bulk)
@@ -425,7 +425,7 @@ export default function DashboardPage() {
       if (entryMode === 'single') {
         if (!empForm.employee_code.trim()) throw new Error('Employee Code is required.');
         if (!empForm.name.trim()) throw new Error('Employee Name is required.');
-        if (!empForm.department_id) throw new Error('Department is required.');
+        if (!empForm.branch_id) throw new Error('Branch is required.');
         if (!empForm.designation.trim()) throw new Error('Designation is required.');
 
         const empData = {
@@ -465,13 +465,13 @@ export default function DashboardPage() {
         }
 
         bulkEmployees.forEach((emp) => {
-          const deptId = getDeptIdByName(emp.department_name);
+          const branchId = getBranchIdByName(emp.branch_name);
           const empData = {
             id: null, // Always attempt matching by employee code first
             employee_code: emp.employee_code,
             name: emp.name,
             designation: emp.designation,
-            department_id: String(deptId),
+            branch_id: String(branchId),
             mobile: emp.mobile,
             email: emp.email
           };
@@ -723,7 +723,7 @@ export default function DashboardPage() {
 
     const matchesCategory = filterCategory === '' || req.category === filterCategory;
     const matchesStatus = filterStatus === '' || req.status === filterStatus;
-    const matchesDept = filterDept === '' || String(req.department_id) === filterDept;
+    const matchesBranch = filterBranch === '' || String(req.branch_id) === filterBranch;
 
     let matchesDate = true;
     if (filterStartDate || filterEndDate) {
@@ -739,7 +739,7 @@ export default function DashboardPage() {
       }
     }
 
-    return matchesSearch && matchesCategory && matchesStatus && matchesDept && matchesDate;
+    return matchesSearch && matchesCategory && matchesStatus && matchesBranch && matchesDate;
   });
 
   return (
@@ -908,7 +908,7 @@ export default function DashboardPage() {
                               >
                                 <span className={styles.itemName}>{emp.name}</span>
                                 <span className={styles.itemMeta}>
-                                  {emp.employee_code} • {emp.designation} ({emp.department_name})
+                                  {emp.employee_code} • {emp.designation} ({emp.branch_name})
                                 </span>
                               </div>
                             ))}
@@ -977,17 +977,17 @@ export default function DashboardPage() {
                       </div>
 
                       <div className={styles.inputGroup}>
-                        <label htmlFor="department_id">Department *</label>
+                        <label htmlFor="branch_id">Branch *</label>
                         <select
-                          id="department_id"
-                          value={empForm.department_id}
-                          onChange={(e) => setEmpForm(prev => ({ ...prev, department_id: e.target.value }))}
+                          id="branch_id"
+                          value={empForm.branch_id}
+                          onChange={(e) => setEmpForm(prev => ({ ...prev, branch_id: e.target.value }))}
                           disabled={isDetailsLocked || submitting}
                           required
                         >
-                          {departments.map((dept) => (
-                            <option key={dept.id} value={dept.id}>
-                              {dept.name}
+                          {branches.map((branch) => (
+                            <option key={branch.id} value={branch.id}>
+                              {branch.name}
                             </option>
                           ))}
                         </select>
@@ -1115,7 +1115,7 @@ export default function DashboardPage() {
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Designation</th>
-                                <th>Department</th>
+                                <th>Branch</th>
                                 <th>Mobile</th>
                                 <th>Email</th>
                                 <th style={{ textAlign: 'right' }}>Actions</th>
@@ -1127,7 +1127,7 @@ export default function DashboardPage() {
                                   <td style={{ fontWeight: 600 }}>{emp.employee_code}</td>
                                   <td>{emp.name}</td>
                                   <td>{emp.designation}</td>
-                                  <td>{emp.department_name}</td>
+                                  <td>{emp.branch_name}</td>
                                   <td>{emp.mobile}</td>
                                   <td>{emp.email}</td>
                                   <td className={styles.sheetActionsCell}>
@@ -1392,7 +1392,7 @@ export default function DashboardPage() {
                         </div>
 
                         <div className={styles.idEmpDept}>
-                          {departments.find(d => String(d.id) === empForm.department_id)?.name || 'DEPARTMENT'}
+                          {branches.find(d => String(d.id) === empForm.branch_id)?.name || 'BRANCH'}
                         </div>
                       </div>
 
@@ -1456,7 +1456,7 @@ export default function DashboardPage() {
                         <div className={styles.visitingContactItem} style={{ gridColumn: 'span 2' }}>
                           <MapPin size={10} />
                           <span>
-                            {departments.find(d => String(d.id) === empForm.department_id)?.name || 'HQ Branch Office'}
+                            {branches.find(d => String(d.id) === empForm.branch_id)?.name || 'HQ Branch Office'}
                           </span>
                         </div>
                       </div>
@@ -1511,12 +1511,12 @@ export default function DashboardPage() {
                   </select>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--slate-500)' }}>Department</span>
-                  <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)}>
-                    <option value="">All Departments</option>
-                    {departments.map((dept) => (
-                      <option key={dept.id} value={dept.id}>{dept.name}</option>
+                 <div className={styles.inputGroup}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--slate-500)' }}>Branch</span>
+                  <select value={filterBranch} onChange={(e) => setFilterBranch(e.target.value)}>
+                    <option value="">All Branches</option>
+                    {branches.map((branch) => (
+                      <option key={branch.id} value={branch.id}>{branch.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1547,14 +1547,14 @@ export default function DashboardPage() {
                   <span style={{ fontSize: '12px', color: 'var(--slate-500)', fontWeight: 500 }}>
                     Found <strong>{filteredPipelineRequests.length}</strong> card requisitions
                   </span>
-                  {(filterSearch || filterCategory || filterStatus || filterDept || filterStartDate || filterEndDate) && (
+                  {(filterSearch || filterCategory || filterStatus || filterBranch || filterStartDate || filterEndDate) && (
                     <button 
                       className="btn btn-secondary btn-sm"
                       onClick={() => {
                         setFilterSearch('');
                         setFilterCategory('');
                         setFilterStatus('');
-                        setFilterDept('');
+                        setFilterBranch('');
                         setFilterStartDate('');
                         setFilterEndDate('');
                       }}
@@ -1624,7 +1624,7 @@ export default function DashboardPage() {
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontWeight: '600', color: 'var(--slate-900)' }}>{req.employee_name}</span>
                                 <span style={{ fontSize: '11px', color: 'var(--slate-400)' }}>
-                                  {req.employee_code} • {req.department_name}
+                                  {req.employee_code} • {req.branch_name}
                                 </span>
                               </div>
                             </td>
@@ -1803,23 +1803,23 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Bar chart departments stats */}
+              {/* Bar chart branches stats */}
               <div className={styles.chartCard}>
                 <div className={styles.chartHeader}>
                   <h3 className={styles.chartTitle}>
                     <Award size={16} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom', color: '#7c3aed' }} />
-                    Department Distribution
+                    Branch Distribution
                   </h3>
-                  <p className={styles.chartSubtitle}>Total card requisitions categorized by organizational departments</p>
+                  <p className={styles.chartSubtitle}>Total card requisitions categorized by organizational branches</p>
                 </div>
                 <div className={styles.chartBody}>
-                  {departmentStats.length === 0 ? (
+                  {branchStats.length === 0 ? (
                     <div className={styles.chartLoading}>No statistical data available</div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={departmentStats} margin={{ top: 5, right: 20, left: -15, bottom: 5 }}>
+                      <BarChart data={branchStats} margin={{ top: 5, right: 20, left: -15, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis dataKey="department" stroke="#94a3b8" fontSize={10} tickLine={false} />
+                        <XAxis dataKey="branch" stroke="#94a3b8" fontSize={10} tickLine={false} />
                         <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} allowDecimals={false} />
                         <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px' }} />
                         <Legend wrapperStyle={{ fontSize: '12px', marginTop: '10px' }} />
@@ -1873,7 +1873,7 @@ export default function DashboardPage() {
 
                       <div className={styles.idEmpName}>{viewProofRequest.employee_name}</div>
                       <div className={styles.idEmpRole}>ID BADGE PRINT</div>
-                      <div className={styles.idEmpDept}>{viewProofRequest.department_name}</div>
+                      <div className={styles.idEmpDept}>{viewProofRequest.branch_name}</div>
                     </div>
 
                     <div className={styles.idMockupFooter}>
@@ -1932,7 +1932,7 @@ export default function DashboardPage() {
                       </div>
                       <div className={styles.visitingContactItem} style={{ gridColumn: 'span 2' }}>
                         <MapPin size={10} />
-                        <span>{viewProofRequest.department_name} Branch Office</span>
+                        <span>{viewProofRequest.branch_name} Branch Office</span>
                       </div>
                     </div>
                   </div>

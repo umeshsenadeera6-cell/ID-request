@@ -23,8 +23,8 @@ interface IDRequest {
   employee_id: number;
   employee_name: string;
   employee_code: string;
-  department_id: number;
-  department_name: string;
+  branch_id: number;
+  branch_name: string;
   card_type: string;
   request_date: string;
   requested_by: string;
@@ -38,10 +38,10 @@ interface Employee {
   id: number;
   name: string;
   employee_code: string;
-  department_name: string;
+  branch_name: string;
 }
 
-interface Department {
+interface Branch {
   id: number;
   name: string;
 }
@@ -52,13 +52,13 @@ export default function IDRequestsPage() {
   // Data State
   const [requests, setRequests] = useState<IDRequest[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filters State
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDept, setSelectedDept] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -92,22 +92,22 @@ export default function IDRequestsPage() {
       setLoading(true);
       setError(null);
 
-      const [reqRes, empRes, deptRes] = await Promise.all([
+      const [reqRes, empRes, branchRes] = await Promise.all([
         fetch('/api/requests/id-cards'),
         fetch('/api/employees'),
-        fetch('/api/departments')
+        fetch('/api/branches')
       ]);
 
       const reqJson = await reqRes.json();
       const empJson = await empRes.json();
-      const deptJson = await deptRes.json();
+      const branchJson = await branchRes.json();
 
-      if (reqJson.success && empJson.success && deptJson.success) {
+      if (reqJson.success && empJson.success && branchJson.success) {
         setRequests(reqJson.data);
         setEmployees(empJson.data);
-        setDepartments(deptJson.data);
+        setBranches(branchJson.data);
       } else {
-        setError(reqJson.error || empJson.error || deptJson.error || 'Failed to fetch data.');
+        setError(reqJson.error || empJson.error || branchJson.error || 'Failed to fetch data.');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred while loading requests.');
@@ -236,8 +236,8 @@ export default function IDRequestsPage() {
       req.employee_code.toLowerCase().includes(searchTerm.toLowerCase()) || 
       req.requested_by.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // 2. Department filter
-    const matchesDept = selectedDept === '' || req.department_id === parseInt(selectedDept);
+    // 2. Branch filter
+    const matchesBranch = selectedBranch === '' || req.branch_id === parseInt(selectedBranch);
 
     // 3. Status filter
     const matchesStatus = selectedStatus === '' || req.status === selectedStatus;
@@ -259,7 +259,7 @@ export default function IDRequestsPage() {
       }
     }
 
-    return matchesSearch && matchesDept && matchesStatus && matchesDate;
+    return matchesSearch && matchesBranch && matchesStatus && matchesDate;
   });
 
   const getCardTypeBadgeClass = (type: string) => {
@@ -304,11 +304,11 @@ export default function IDRequestsPage() {
             </div>
 
             <div className={styles.inputGroup}>
-              <span className={styles.label}>Department</span>
-              <select value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)}>
-                <option value="">All Departments</option>
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>{dept.name}</option>
+              <span className={styles.label}>Branch</span>
+              <select value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
+                <option value="">All Branches</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>{branch.name}</option>
                 ))}
               </select>
             </div>
@@ -399,7 +399,7 @@ export default function IDRequestsPage() {
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <span style={{ fontWeight: '600', color: 'var(--slate-900)' }}>{req.employee_name}</span>
                           <span style={{ fontSize: '12px', color: 'var(--slate-400)' }}>
-                            {req.employee_code} • {req.department_name}
+                            {req.employee_code} • {req.branch_name}
                           </span>
                         </div>
                       </td>
@@ -499,7 +499,7 @@ export default function IDRequestsPage() {
                 >
                   {employees.map((emp) => (
                     <option key={emp.id} value={emp.id}>
-                      {emp.name} ({emp.employee_code}) - {emp.department_name}
+                      {emp.name} ({emp.employee_code}) - {emp.branch_name}
                     </option>
                   ))}
                 </select>

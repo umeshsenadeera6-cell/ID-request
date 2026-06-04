@@ -117,12 +117,8 @@
   background-color: var(--primary);
 }
 
-.userRoleBadgeHR {
+.userRoleBadgeUser {
   background-color: var(--slate-700);
-}
-
-.userRoleBadgeViewer {
-  background-color: var(--slate-400);
 }
 
 @media (max-width: 600px) {

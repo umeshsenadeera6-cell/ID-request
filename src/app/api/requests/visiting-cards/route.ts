@@ -5,10 +5,10 @@ import { query } from '@/lib/db';
 export async function GET() {
   try {
     const sql = `
-      SELECT r.*, e.name AS employee_name, e.employee_code, d.name AS department_name, e.department_id 
+      SELECT r.*, e.name AS employee_name, e.employee_code, b.name AS branch_name, e.branch_id 
       FROM visiting_card_requests r 
       JOIN employees e ON r.employee_id = e.id 
-      JOIN departments d ON e.department_id = d.id 
+      JOIN branches b ON e.branch_id = b.id 
       ORDER BY r.request_date DESC, r.id DESC
     `;
     const requests = await query(sql);

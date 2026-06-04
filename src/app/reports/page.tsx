@@ -20,8 +20,8 @@ interface ReportRow {
   category: 'ID Card' | 'Visiting Card';
   employee_name: string;
   employee_code: string;
-  department_id: number;
-  department_name: string;
+  branch_id: number;
+  branch_name: string;
   card_type?: string;
   quantity?: number;
   request_date: string;
@@ -32,7 +32,7 @@ interface ReportRow {
   remarks: string | null;
 }
 
-interface Department {
+interface Branch {
   id: number;
   name: string;
 }
@@ -41,15 +41,15 @@ export default function ReportsPage() {
   const { currentRole, currentUser } = useRole();
 
   // Data State
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [allRequests, setAllRequests] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Configuration State
-  const [reportType, setReportType] = useState<'monthly' | 'department'>('monthly');
+  const [reportType, setReportType] = useState<'monthly' | 'branch'>('monthly');
   const [selectedMonth, setSelectedMonth] = useState(''); // Format: YYYY-MM
-  const [selectedDept, setSelectedDept] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'id' | 'vc'>('all');
 
   // Generated Report State
@@ -72,17 +72,17 @@ export default function ReportsPage() {
       setLoading(true);
       setError(null);
 
-      const [idRes, vcRes, deptRes] = await Promise.all([
+      const [idRes, vcRes, branchRes] = await Promise.all([
         fetch('/api/requests/id-cards'),
         fetch('/api/requests/visiting-cards'),
-        fetch('/api/departments')
+        fetch('/api/branches')
       ]);
 
       const idJson = await idRes.json();
       const vcJson = await vcRes.json();
-      const deptJson = await deptRes.json();
+      const branchJson = await branchRes.json();
 
-      if (idJson.success && vcJson.success && deptJson.success) {
+      if (idJson.success && vcJson.success && branchJson.success) {
         // Map ID requests to common ReportRow format
         const idMapped = idJson.data.map((r: any) => ({
           ...r,
@@ -97,7 +97,7 @@ export default function ReportsPage() {
 
         const merged = [...idMapped, ...vcMapped];
         setAllRequests(merged);
-        setDepartments(deptJson.data);
+        setBranches(branchJson.data);
 
         // Compile available months from dates
         const monthsMap: Record<string, string> = {};
@@ -125,7 +125,7 @@ export default function ReportsPage() {
 
         setAvailableMonths(formattedMonths);
         setSelectedMonth(curValue);
-        setSelectedDept(deptJson.data[0]?.id.toString() || '');
+        setSelectedBranch(branchJson.data[0]?.id.toString() || '');
       } else {
         setError('Failed to load request records.');
       }
@@ -159,9 +159,9 @@ export default function ReportsPage() {
       const monthLabel = availableMonths.find(m => m.value === selectedMonth)?.label || '';
       setReportTitle(`Monthly Card Printing Report - ${monthLabel}`);
     } else {
-      filtered = filtered.filter(r => r.department_id === parseInt(selectedDept));
-      const deptName = departments.find(d => d.id === parseInt(selectedDept))?.name || 'Department';
-      setReportTitle(`Department Printing Report - ${deptName}`);
+      filtered = filtered.filter(r => r.branch_id === parseInt(selectedBranch));
+      const branchName = branches.find(b => b.id === parseInt(selectedBranch))?.name || 'Branch';
+      setReportTitle(`Branch Printing Report - ${branchName}`);
     }
 
     // Sort requests by date descending
@@ -184,7 +184,7 @@ export default function ReportsPage() {
       'Category': r.category,
       'Employee Code': r.employee_code,
       'Employee Name': r.employee_name,
-      'Department': r.department_name,
+      'Branch': r.branch_name,
       'Details': r.category === 'ID Card' ? r.card_type : `${r.quantity} Cards`,
       'Requested By': r.requested_by,
       'Request Date': r.request_date ? new Date(r.request_date).toISOString().split('T')[0] : '',
@@ -243,7 +243,7 @@ export default function ReportsPage() {
     <>
       <Header 
         title="Reports & Analytics" 
-        subtitle="Generate monthly statistics, department reports, and export print files." 
+        subtitle="Generate monthly statistics, branch reports, and export print files." 
       />
 
       <main className="main-content fade-in">
@@ -262,10 +262,10 @@ export default function ReportsPage() {
                 <select 
                   id="reportType"
                   value={reportType} 
-                  onChange={(e) => setReportType(e.target.value as 'monthly' | 'department')}
+                  onChange={(e) => setReportType(e.target.value as 'monthly' | 'branch')}
                 >
                   <option value="monthly">Monthly Print Summary</option>
-                  <option value="department">Department Print Summary</option>
+                  <option value="branch">Branch Print Summary</option>
                 </select>
               </div>
 
@@ -284,14 +284,14 @@ export default function ReportsPage() {
                 </div>
               ) : (
                 <div className={styles.inputGroup}>
-                  <label htmlFor="selectedDept">Choose Department</label>
+                  <label htmlFor="selectedBranch">Choose Branch</label>
                   <select 
-                    id="selectedDept"
-                    value={selectedDept} 
-                    onChange={(e) => setSelectedDept(e.target.value)}
+                    id="selectedBranch"
+                    value={selectedBranch} 
+                    onChange={(e) => setSelectedBranch(e.target.value)}
                   >
-                    {departments.map((d) => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
+                    {branches.map((b) => (
+                      <option key={b.id} value={b.id}>{b.name}</option>
                     ))}
                   </select>
                 </div>
@@ -421,7 +421,7 @@ export default function ReportsPage() {
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                               <span style={{ fontWeight: '600', color: 'var(--slate-900)' }}>{row.employee_name}</span>
                               <span style={{ fontSize: '11px', color: 'var(--slate-400)' }}>
-                                {row.employee_code} • {row.department_name}
+                                {row.employee_code} • {row.branch_name}
                               </span>
                             </div>
                           </td>

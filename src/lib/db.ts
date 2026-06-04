@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 
 // Initialize mock store globally to persist across development hot-reloads
 interface MockStore {
-  departments: any[];
+  branches: any[];
   employees: any[];
   id_card_requests: any[];
   visiting_card_requests: any[];
@@ -10,7 +10,7 @@ interface MockStore {
 }
 
 const initialMockStore: MockStore = {
-  departments: [
+  branches: [
     { id: 1, name: 'Information Technology', created_at: new Date() },
     { id: 2, name: 'Human Resources', created_at: new Date() },
     { id: 3, name: 'Finance & Accounts', created_at: new Date() },
@@ -18,12 +18,12 @@ const initialMockStore: MockStore = {
     { id: 5, name: 'Operations', created_at: new Date() },
   ],
   employees: [
-    { id: 1, employee_code: 'EMP001', name: 'John Doe', department_id: 1, designation: 'Senior Software Engineer', mobile: '+1 555-0101', email: 'john.doe@company.com' },
-    { id: 2, employee_code: 'EMP002', name: 'Jane Smith', department_id: 2, designation: 'HR Manager', mobile: '+1 555-0102', email: 'jane.smith@company.com' },
-    { id: 3, employee_code: 'EMP003', name: 'Robert Johnson', department_id: 3, designation: 'Financial Analyst', mobile: '+1 555-0103', email: 'robert.j@company.com' },
-    { id: 4, employee_code: 'EMP004', name: 'Emily Davis', department_id: 4, designation: 'Marketing Executive', mobile: '+1 555-0104', email: 'emily.d@company.com' },
-    { id: 5, employee_code: 'EMP005', name: 'Michael Brown', department_id: 5, designation: 'Operations Supervisor', mobile: '+1 555-0105', email: 'michael.b@company.com' },
-    { id: 6, employee_code: 'EMP006', name: 'Sarah Wilson', department_id: 1, designation: 'QA Engineer', mobile: '+1 555-0106', email: 'sarah.w@company.com' },
+    { id: 1, employee_code: 'EMP001', name: 'John Doe', branch_id: 1, designation: 'Senior Software Engineer', mobile: '+1 555-0101', email: 'john.doe@company.com' },
+    { id: 2, employee_code: 'EMP002', name: 'Jane Smith', branch_id: 2, designation: 'HR Manager', mobile: '+1 555-0102', email: 'jane.smith@company.com' },
+    { id: 3, employee_code: 'EMP003', name: 'Robert Johnson', branch_id: 3, designation: 'Financial Analyst', mobile: '+1 555-0103', email: 'robert.j@company.com' },
+    { id: 4, employee_code: 'EMP004', name: 'Emily Davis', branch_id: 4, designation: 'Marketing Executive', mobile: '+1 555-0104', email: 'emily.d@company.com' },
+    { id: 5, employee_code: 'EMP005', name: 'Michael Brown', branch_id: 5, designation: 'Operations Supervisor', mobile: '+1 555-0105', email: 'michael.b@company.com' },
+    { id: 6, employee_code: 'EMP006', name: 'Sarah Wilson', branch_id: 1, designation: 'QA Engineer', mobile: '+1 555-0106', email: 'sarah.w@company.com' },
   ],
   id_card_requests: [
     { id: 1, employee_id: 1, card_type: 'RFID', request_date: '2026-05-10', requested_by: 'Jane Smith', print_date: '2026-05-12', issue_date: '2026-05-13', status: 'Issued', remarks: 'RFID card configuration complete' },
@@ -38,8 +38,7 @@ const initialMockStore: MockStore = {
   ],
   users: [
     { id: 1, username: 'admin', password_hash: 'admin123', role: 'Admin', name: 'System Administrator', email: 'admin@company.com' },
-    { id: 2, username: 'hr_user', password_hash: 'hr123', role: 'HR User', name: 'HR Executive', email: 'hr@company.com' },
-    { id: 3, username: 'viewer', password_hash: 'viewer123', role: 'View Only User', name: 'Guest Viewer', email: 'viewer@company.com' }
+    { id: 2, username: 'user', password_hash: 'user123', role: 'User', name: 'Staff User', email: 'user@company.com' }
   ]
 };
 
@@ -103,21 +102,21 @@ export function isMockDatabase(): boolean {
 function executeMockQuery(sql: string, params: any[]): any {
   const cleanSql = sql.replace(/\s+/g, ' ').trim();
   
-  // 1. Departments Query
-  if (cleanSql.startsWith('SELECT * FROM departments') || cleanSql.startsWith('SELECT * FROM `departments`')) {
-    return mockDb.departments;
+  // 1. Branches Query
+  if (cleanSql.startsWith('SELECT * FROM branches') || cleanSql.startsWith('SELECT * FROM `branches`')) {
+    return mockDb.branches;
   }
 
   // 2. Employees Queries
   if (cleanSql.includes('FROM employees') || cleanSql.includes('FROM `employees`')) {
-    // Check if SELECT e.*, d.name AS department_name FROM employees
+    // Check if SELECT e.*, b.name AS branch_name FROM employees
     if (cleanSql.startsWith('SELECT')) {
-      // Return employees with department names joined
+      // Return employees with branch names joined
       return mockDb.employees.map(emp => {
-        const dept = mockDb.departments.find(d => d.id === emp.department_id);
+        const branch = mockDb.branches.find(b => b.id === emp.branch_id);
         return {
           ...emp,
-          department_name: dept ? dept.name : 'Unknown'
+          branch_name: branch ? branch.name : 'Unknown'
         };
       });
     }
@@ -127,7 +126,7 @@ function executeMockQuery(sql: string, params: any[]): any {
     const nextId = mockDb.employees.length > 0 ? Math.max(...mockDb.employees.map(e => e.id)) + 1 : 1;
     const employee_code = params[0];
     const name = params[1];
-    const department_id = parseInt(params[2]);
+    const branch_id = parseInt(params[2]);
     const designation = params[3];
     const mobile = params[4];
     const email = params[5];
@@ -137,16 +136,16 @@ function executeMockQuery(sql: string, params: any[]): any {
       throw new Error(`Duplicate entry '${employee_code}' for key 'employee_code'`);
     }
 
-    const newEmp = { id: nextId, employee_code, name, department_id, designation, mobile, email };
+    const newEmp = { id: nextId, employee_code, name, branch_id, designation, mobile, email };
     mockDb.employees.push(newEmp);
     return { insertId: nextId, affectedRows: 1 };
   }
 
   if (cleanSql.startsWith('UPDATE employees') || cleanSql.startsWith('UPDATE `employees`')) {
-    // Expected params: [employee_code, name, department_id, designation, mobile, email, id]
+    // Expected params: [employee_code, name, branch_id, designation, mobile, email, id]
     const employee_code = params[0];
     const name = params[1];
-    const department_id = parseInt(params[2]);
+    const branch_id = parseInt(params[2]);
     const designation = params[3];
     const mobile = params[4];
     const email = params[5];
@@ -158,7 +157,7 @@ function executeMockQuery(sql: string, params: any[]): any {
       if (mockDb.employees.some(e => e.employee_code === employee_code && e.id !== id)) {
         throw new Error(`Duplicate entry '${employee_code}' for key 'employee_code'`);
       }
-      mockDb.employees[idx] = { id, employee_code, name, department_id, designation, mobile, email };
+      mockDb.employees[idx] = { id, employee_code, name, branch_id, designation, mobile, email };
       return { affectedRows: 1 };
     }
     return { affectedRows: 0 };
@@ -182,13 +181,13 @@ function executeMockQuery(sql: string, params: any[]): any {
     if (cleanSql.startsWith('SELECT')) {
       return mockDb.id_card_requests.map(req => {
         const emp = mockDb.employees.find(e => e.id === req.employee_id);
-        const dept = emp ? mockDb.departments.find(d => d.id === emp.department_id) : null;
+        const branch = emp ? mockDb.branches.find(b => b.id === emp.branch_id) : null;
         return {
           ...req,
           employee_name: emp ? emp.name : 'Unknown',
           employee_code: emp ? emp.employee_code : 'N/A',
-          department_name: dept ? dept.name : 'Unknown',
-          department_id: emp ? emp.department_id : null
+          branch_name: branch ? branch.name : 'Unknown',
+          branch_id: emp ? emp.branch_id : null
         };
       });
     }
@@ -260,13 +259,13 @@ function executeMockQuery(sql: string, params: any[]): any {
     if (cleanSql.startsWith('SELECT')) {
       return mockDb.visiting_card_requests.map(req => {
         const emp = mockDb.employees.find(e => e.id === req.employee_id);
-        const dept = emp ? mockDb.departments.find(d => d.id === emp.department_id) : null;
+        const branch = emp ? mockDb.branches.find(b => b.id === emp.branch_id) : null;
         return {
           ...req,
           employee_name: emp ? emp.name : 'Unknown',
           employee_code: emp ? emp.employee_code : 'N/A',
-          department_name: dept ? dept.name : 'Unknown',
-          department_id: emp ? emp.department_id : null
+          branch_name: branch ? branch.name : 'Unknown',
+          branch_id: emp ? emp.branch_id : null
         };
       });
     }

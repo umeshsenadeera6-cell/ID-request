@@ -28,8 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
 
   const getRoleBadgeClass = (role: UserRole) => {
     if (role === 'Admin') return styles.userRoleBadgeAdmin;
-    if (role === 'HR User') return styles.userRoleBadgeHR;
-    return styles.userRoleBadgeViewer;
+    return styles.userRoleBadgeUser;
   };
 
   return (
@@ -52,8 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
             onChange={handleRoleChange}
           >
             <option value="Admin">Admin</option>
-            <option value="HR User">HR User</option>
-            <option value="View Only User">View Only</option>
+            <option value="User">User</option>
           </select>
         </div>
 

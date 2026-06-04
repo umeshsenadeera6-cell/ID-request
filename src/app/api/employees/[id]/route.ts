@@ -8,20 +8,20 @@ export async function PUT(request: Request, context: { params: Params }) {
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const { employee_code, name, department_id, designation, mobile, email } = body;
+    const { employee_code, name, branch_id, designation, mobile, email } = body;
 
-    if (!employee_code || !name || !department_id || !designation || !mobile || !email) {
+    if (!employee_code || !name || !branch_id || !designation || !mobile || !email) {
       return NextResponse.json(
         { success: false, error: 'All fields are required.' },
         { status: 400 }
       );
     }
 
-    const sql = 'UPDATE employees SET employee_code = ?, name = ?, department_id = ?, designation = ?, mobile = ?, email = ? WHERE id = ?';
+    const sql = 'UPDATE employees SET employee_code = ?, name = ?, branch_id = ?, designation = ?, mobile = ?, email = ? WHERE id = ?';
     const result = await query(sql, [
       employee_code.trim(),
       name.trim(),
-      parseInt(department_id),
+      parseInt(branch_id),
       designation.trim(),
       mobile.trim(),
       email.trim(),

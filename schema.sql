@@ -4,8 +4,8 @@
 CREATE DATABASE IF NOT EXISTS `id_card_tracker`;
 USE `id_card_tracker`;
 
--- 1. Departments Table
-CREATE TABLE IF NOT EXISTS `departments` (
+-- 1. Branches Table
+CREATE TABLE IF NOT EXISTS `branches` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL UNIQUE,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -16,13 +16,13 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `employee_code` VARCHAR(50) NOT NULL UNIQUE,
   `name` VARCHAR(100) NOT NULL,
-  `department_id` INT NOT NULL,
+  `branch_id` INT NOT NULL,
   `designation` VARCHAR(100) NOT NULL,
   `mobile` VARCHAR(20) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE RESTRICT
+  FOREIGN KEY (`branch_id`) REFERENCES `branches` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3. Users Table (System Access)
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `username` VARCHAR(50) NOT NULL UNIQUE,
   `password_hash` VARCHAR(255) NOT NULL,
-  `role` ENUM('Admin', 'HR User', 'View Only User') NOT NULL DEFAULT 'View Only User',
+  `role` ENUM('Admin', 'User') NOT NULL DEFAULT 'User',
   `name` VARCHAR(100) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `visiting_card_requests` (
 
 -- INDEXES for Optimized Searching & Reports
 CREATE INDEX idx_employee_name ON employees(name);
-CREATE INDEX idx_employee_dept ON employees(department_id);
+CREATE INDEX idx_employee_branch ON employees(branch_id);
 CREATE INDEX idx_id_req_status ON id_card_requests(status);
 CREATE INDEX idx_id_req_date ON id_card_requests(request_date);
 CREATE INDEX idx_vc_req_status ON visiting_card_requests(status);
@@ -81,8 +81,8 @@ CREATE INDEX idx_vc_req_date ON visiting_card_requests(request_date);
 -- SEED DATA (For initial setups & references)
 -- ==========================================
 
--- Seed Departments
-INSERT INTO `departments` (`id`, `name`) VALUES
+-- Seed Branches
+INSERT INTO `branches` (`id`, `name`) VALUES
 (1, 'Information Technology'),
 (2, 'Human Resources'),
 (3, 'Finance & Accounts'),
@@ -91,21 +91,20 @@ INSERT INTO `departments` (`id`, `name`) VALUES
 ON DUPLICATE KEY UPDATE `name` = VALUES(`name`);
 
 -- Seed Employees
-INSERT INTO `employees` (`id`, `employee_code`, `name`, `department_id`, `designation`, `mobile`, `email`) VALUES
+INSERT INTO `employees` (`id`, `employee_code`, `name`, `branch_id`, `designation`, `mobile`, `email`) VALUES
 (1, 'EMP001', 'John Doe', 1, 'Senior Software Engineer', '+1 555-0101', 'john.doe@company.com'),
 (2, 'EMP002', 'Jane Smith', 2, 'HR Manager', '+1 555-0102', 'jane.smith@company.com'),
 (3, 'EMP003', 'Robert Johnson', 3, 'Financial Analyst', '+1 555-0103', 'robert.j@company.com'),
 (4, 'EMP004', 'Emily Davis', 4, 'Marketing Executive', '+1 555-0104', 'emily.d@company.com'),
 (5, 'EMP005', 'Michael Brown', 5, 'Operations Supervisor', '+1 555-0105', 'michael.b@company.com'),
 (6, 'EMP006', 'Sarah Wilson', 1, 'QA Engineer', '+1 555-0106', 'sarah.w@company.com')
-ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `department_id` = VALUES(`department_id`), `designation` = VALUES(`designation`), `mobile` = VALUES(`mobile`), `email` = VALUES(`email`);
+ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `branch_id` = VALUES(`branch_id`), `designation` = VALUES(`designation`), `mobile` = VALUES(`mobile`), `email` = VALUES(`email`);
 
 -- Seed Users
--- Hashed passwords represent simple plain-text equivalence: 'admin123', 'hr123', 'viewer123'
+-- Hashed passwords represent simple plain-text equivalence: 'admin123', 'user123'
 INSERT INTO `users` (`id`, `username`, `password_hash`, `role`, `name`, `email`) VALUES
 (1, 'admin', 'admin123', 'Admin', 'System Administrator', 'admin@company.com'),
-(2, 'hr_user', 'hr123', 'HR User', 'HR Executive', 'hr@company.com'),
-(3, 'viewer', 'viewer123', 'View Only User', 'Guest Viewer', 'viewer@company.com')
+(2, 'user', 'user123', 'User', 'Staff User', 'user@company.com')
 ON DUPLICATE KEY UPDATE `username` = VALUES(`username`), `password_hash` = VALUES(`password_hash`), `role` = VALUES(`role`), `name` = VALUES(`name`), `email` = VALUES(`email`);
 
 -- Seed ID Card Requests

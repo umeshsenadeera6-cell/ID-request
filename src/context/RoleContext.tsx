@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type UserRole = 'Admin' | 'HR User' | 'View Only User';
+export type UserRole = 'Admin' | 'User';
 
 interface User {
   name: string;
@@ -23,8 +23,7 @@ const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
 const roleUsers: Record<UserRole, User> = {
   'Admin': { name: 'System Administrator', role: 'Admin', email: 'admin@company.com' },
-  'HR User': { name: 'HR Executive', role: 'HR User', email: 'hr@company.com' },
-  'View Only User': { name: 'Guest Viewer', role: 'View Only User', email: 'viewer@company.com' }
+  'User': { name: 'Staff User', role: 'User', email: 'user@company.com' }
 };
 
 export const RoleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -45,7 +44,7 @@ export const RoleProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const canWrite = currentRole === 'Admin' || currentRole === 'HR User';
+  const canWrite = currentRole === 'Admin' || currentRole === 'User';
   const canDelete = currentRole === 'Admin';
   const isAdmin = currentRole === 'Admin';
 

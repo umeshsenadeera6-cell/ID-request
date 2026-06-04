@@ -20,14 +20,14 @@ interface Employee {
   id: number;
   employee_code: string;
   name: string;
-  department_id: number;
-  department_name: string;
+  branch_id: number;
+  branch_name: string;
   designation: string;
   mobile: string;
   email: string;
 }
 
-interface Department {
+interface Branch {
   id: number;
   name: string;
 }
@@ -37,13 +37,13 @@ export default function EmployeesPage() {
 
   // State
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filters State
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDept, setSelectedDept] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,7 +54,7 @@ export default function EmployeesPage() {
   const [formData, setFormData] = useState({
     employee_code: '',
     name: '',
-    department_id: '',
+    branch_id: '',
     designation: '',
     mobile: '',
     email: ''
@@ -74,19 +74,19 @@ export default function EmployeesPage() {
       setLoading(true);
       setError(null);
       
-      const [empRes, deptRes] = await Promise.all([
+      const [empRes, branchRes] = await Promise.all([
         fetch('/api/employees'),
-        fetch('/api/departments')
+        fetch('/api/branches')
       ]);
 
       const empJson = await empRes.json();
-      const deptJson = await deptRes.json();
+      const branchJson = await branchRes.json();
 
-      if (empJson.success && deptJson.success) {
+      if (empJson.success && branchJson.success) {
         setEmployees(empJson.data);
-        setDepartments(deptJson.data);
+        setBranches(branchJson.data);
       } else {
-        setError(empJson.error || deptJson.error || 'Failed to fetch data.');
+        setError(empJson.error || branchJson.error || 'Failed to fetch data.');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred while loading data.');
@@ -108,7 +108,7 @@ export default function EmployeesPage() {
     setFormData({
       employee_code: '',
       name: '',
-      department_id: departments[0]?.id.toString() || '',
+      branch_id: branches[0]?.id.toString() || '',
       designation: '',
       mobile: '',
       email: ''
@@ -123,7 +123,7 @@ export default function EmployeesPage() {
     setFormData({
       employee_code: emp.employee_code,
       name: emp.name,
-      department_id: emp.department_id.toString(),
+      branch_id: emp.branch_id.toString(),
       designation: emp.designation,
       mobile: emp.mobile,
       email: emp.email
@@ -141,7 +141,7 @@ export default function EmployeesPage() {
     // Form client-side checks
     if (!formData.employee_code.trim()) return setFormError('Employee Code is required.');
     if (!formData.name.trim()) return setFormError('Employee Name is required.');
-    if (!formData.department_id) return setFormError('Department selection is required.');
+    if (!formData.branch_id) return setFormError('Branch selection is required.');
     if (!formData.designation.trim()) return setFormError('Designation is required.');
     if (!formData.mobile.trim()) return setFormError('Mobile Number is required.');
     if (!formData.email.trim()) return setFormError('Email Address is required.');
@@ -188,16 +188,16 @@ export default function EmployeesPage() {
     }
   };
 
-  // Client side search and department filtering
+  // Client side search and branch filtering
   const filteredEmployees = employees.filter(emp => {
     const matchesSearch = 
       emp.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
       emp.employee_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.designation.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesDept = selectedDept === '' || emp.department_id === parseInt(selectedDept);
+    const matchesBranch = selectedBranch === '' || emp.branch_id === parseInt(selectedBranch);
     
-    return matchesSearch && matchesDept;
+    return matchesSearch && matchesBranch;
   });
 
   if (!mounted) return null;
@@ -206,7 +206,7 @@ export default function EmployeesPage() {
     <>
       <Header 
         title="Employee Management" 
-        subtitle="Manage employee records, departments, designations and contact details." 
+        subtitle="Manage employee records, branches, designations and contact details." 
       />
 
       <main className="main-content fade-in">
@@ -234,14 +234,14 @@ export default function EmployeesPage() {
             </div>
 
             <div className={styles.inputGroup}>
-              <span className={styles.label}>Department</span>
+              <span className={styles.label}>Branch</span>
               <select 
-                value={selectedDept} 
-                onChange={(e) => setSelectedDept(e.target.value)}
+                value={selectedBranch} 
+                onChange={(e) => setSelectedBranch(e.target.value)}
               >
-                <option value="">All Departments</option>
-                {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>{dept.name}</option>
+                <option value="">All Branches</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>{branch.name}</option>
                 ))}
               </select>
             </div>
@@ -278,7 +278,7 @@ export default function EmployeesPage() {
                   <tr>
                     <th>Emp. Code</th>
                     <th>Name</th>
-                    <th>Department</th>
+                    <th>Branch</th>
                     <th>Designation</th>
                     <th>Mobile</th>
                     <th>Email Address</th>
@@ -291,7 +291,7 @@ export default function EmployeesPage() {
                       <td style={{ fontWeight: '600', color: 'var(--slate-900)' }}>{emp.employee_code}</td>
                       <td>{emp.name}</td>
                       <td>
-                        <span className="badge standard">{emp.department_name}</span>
+                        <span className="badge standard">{emp.branch_name}</span>
                       </td>
                       <td>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -382,16 +382,16 @@ export default function EmployeesPage() {
               </div>
 
               <div className={styles.inputGroup}>
-                <label htmlFor="department_id">Department *</label>
+                <label htmlFor="branch_id">Branch *</label>
                 <select 
-                  id="department_id"
-                  name="department_id"
-                  value={formData.department_id}
+                  id="branch_id"
+                  name="branch_id"
+                  value={formData.branch_id}
                   onChange={handleInputChange}
                   required
                 >
-                  {departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>{dept.name}</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>{branch.name}</option>
                   ))}
                 </select>
               </div>

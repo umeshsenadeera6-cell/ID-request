@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 // GET: Retrieve list of all employees
 export async function GET() {
   try {
-    const sql = 'SELECT e.*, d.name AS department_name FROM employees e JOIN departments d ON e.department_id = d.id ORDER BY e.employee_code ASC';
+    const sql = 'SELECT e.*, b.name AS branch_name FROM employees e JOIN branches b ON e.branch_id = b.id ORDER BY e.employee_code ASC';
     const employees = await query(sql);
     return NextResponse.json({ success: true, data: employees });
   } catch (error: any) {
@@ -17,21 +17,21 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { employee_code, name, department_id, designation, mobile, email } = body;
+    const { employee_code, name, branch_id, designation, mobile, email } = body;
 
     // Simple validations
-    if (!employee_code || !name || !department_id || !designation || !mobile || !email) {
+    if (!employee_code || !name || !branch_id || !designation || !mobile || !email) {
       return NextResponse.json(
-        { success: false, error: 'All fields (employee_code, name, department_id, designation, mobile, email) are required.' },
+        { success: false, error: 'All fields (employee_code, name, branch_id, designation, mobile, email) are required.' },
         { status: 400 }
       );
     }
 
-    const sql = 'INSERT INTO employees (employee_code, name, department_id, designation, mobile, email) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO employees (employee_code, name, branch_id, designation, mobile, email) VALUES (?, ?, ?, ?, ?, ?)';
     const result = await query(sql, [
       employee_code.trim(),
       name.trim(),
-      parseInt(department_id),
+      parseInt(branch_id),
       designation.trim(),
       mobile.trim(),
       email.trim()
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         id: result.insertId,
         employee_code,
         name,
-        department_id,
+        branch_id,
         designation,
         mobile,
         email

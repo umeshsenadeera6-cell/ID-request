@@ -21,7 +21,7 @@ interface Employee {
   id: number;
   name: string;
   employee_code: string;
-  department_name: string;
+  branch_name: string;
   designation: string;
 }
 
@@ -246,7 +246,7 @@ export default function NewIDRequestPage() {
                           >
                             <span className={styles.itemName}>{emp.name}</span>
                             <span className={styles.itemMeta}>
-                              {emp.employee_code} • {emp.designation} ({emp.department_name})
+                              {emp.employee_code} • {emp.designation} ({emp.branch_name})
                             </span>
                           </div>
                         ))}
@@ -270,7 +270,7 @@ export default function NewIDRequestPage() {
                         Code: <strong>{selectedEmployee.employee_code}</strong> • {selectedEmployee.designation}
                       </span>
                       <span className={styles.empMeta} style={{ fontSize: '11px', color: 'var(--slate-500)' }}>
-                        Department: {selectedEmployee.department_name}
+                        Branch: {selectedEmployee.branch_name}
                       </span>
                     </div>
                     <button
@@ -317,7 +317,7 @@ export default function NewIDRequestPage() {
                   </div>
 
                   <div className={`${styles.inputGroup} ${styles.formGridFull}`}>
-                    <label htmlFor="requested_by">Requested By (HR User / Manager) *</label>
+                    <label htmlFor="requested_by">Requested By (User / Manager) *</label>
                     <input
                       id="requested_by"
                       type="text"
